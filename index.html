@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <title>RESEP MAMA</title>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Resep Mama</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" href="#">Cari Resep</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Cari Resep</h1>
+            <div class="input-group">
+                <input type="text" id="text-cari" class="form-control">
+                <div class="input-group-append">
+                    <button class="btn btn-dark" type="button" id="btnCari">Cari</button>
+                </div>
+            </div>
+                <div class="row" id="cari">
+                </div>
+
+    </div>
+    <div id="mdl"></div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="js/script.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            
+            $('body').on('click','#btnCari',function(){
+                let katakunci = $('#text-cari').val();
+                if(katakunci.length>0) {
+                   cari(katakunci);
+                } else {
+                    alert('Kata Kunci belum diisi!!');
+                    return false;
+                }
+            });
+            $('body').on('click','#btn-close',function(){
+                $('#myModal').hide();
+            });
+        });
+
+        $.getJSON('https://masak-apa.tomorisakura.vercel.app/api/recipes', function (masak) {
+            $.each(result, function (i) {
+                $('#masak').append(`
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">` + 
+                             masak.title + '<br>' +
+                             masak.thumb + '<br>' +
+                             masak.key + '<br>' +
+                             masak.times + '<br>' +
+                             masak.portion + '<br>' +
+                             masak.dificulity + `</h5> 
+                            <a href="#" class="card-link" data-toggle="modal" data-target="#exampleModal">Detail</a>
+                        </div>
+                    </div>
+                </div>`);
+            });
+        });
+
+        function cari(masak){
+            $.getJSON('https://masak-apa.tomorisakura.vercel.app', function (data) {
+            $.each(data, function(i) {
+                if (data[i].name == masak) {
+                console.log('trrgrgy', data[i]);                  
+                    let content='';
+                    content+=''+
+                        '<div class="modal" id="myModal" tabindex="-1" role="dialog">'+
+                            '<div class="modal-dialog" role="document">'+
+                                '<div class="modal-content">'+
+                                    '<div class="modal-header">'+
+                                    '<h5 class="modal-title">Hasil Pencarian "'+masak+'"</h5>'+
+                                    '</div>'+
+                                    '<div class="modal-body">'+
+                                        '<p id="modalanime">Nama Anime : '+data[i].title+'</p>'+
+                                        '<p id="modalfile">Banner : '+data[i].thumb+'</p>'+
+                                        '<p id="modalepisode">Episode : '+data[i].key+'</p>'+
+                                        '<p id="modalKeterangan">Keterangan : '+data[i].portion+'</p>'+
+                                    '</div>'+
+                                    '<div class="modal-footer">'+
+                                        '<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close">Close</button>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>'+
+                    '</div>';
+                $('#mdl').html(content);
+                $('#myModal').show();
+                }
+                });
+            });
+            
+        }
+    </script>
+</body>
+
+</html>
